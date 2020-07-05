@@ -15,7 +15,6 @@ def get_comments_number():
                       'Chrome/83.0.4103.116 Safari/537.36'}
     response = requests.get(url, headers=headers)
     response.encoding = 'utf-8'
-
     html = response.text
     comments_count = re.findall('\"CommentCount\":(.*?),.*?\"DefaultGoodCount\":(.*?),', html, re.S)
     return int(comments_count[0][0]) - int(comments_count[0][1])
