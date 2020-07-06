@@ -6,7 +6,7 @@ import re
 import random
 import urllib
 import pymongo
-
+#来自小组的爬虫作业，数据源:https://item.jd.com/100004771217.html，从此页面进行评论爬取并存入mysql数据库
 
 def get_comments_number():
     url = 'https://club.jd.com/comment/productCommentSummaries.action?referenceIds=100004771217'
@@ -30,22 +30,21 @@ def get_comments(__url):
     data0 = reg.sub('', data0)
     data = json.loads(data0)
     print(type(data))
-    # 如果匹配不到comments,content，则返回1,否则返回0\n",
-    # judge=re.findall('.*?\\\"content\\\".*?',data,re.S)
-    # if len(judge)==0:
-    #    return 1
     for i in data['comments']:
         Id = i['id']
         content = i['content']
         date_time = i['creationTime']
-        write_to_mysql(str(Id), content, date_time)
-        print(Id, content, date_time)
+        user_name = i['nickname']
+        product_color = i['productColor']
+        product_name = i['referenceName']
+        write_to_mysql(str(Id), user_name ,content, product_name, product_color, date_time)
+        print(str(Id), user_name ,content, product_name, product_color, date_time)
         # mycol.insert_one(i)
-
-def write_to_mysql(Id, content, date_time):
+#爬取数据存入数据库
+def write_to_mysql(Id, user_name ,content, product_name, product_color,date_time):
     conn = pymysql.connect(host="localhost", user="root", password="", database="user_comments")
     cursor = conn.cursor()
-    sql = "insert into user_comments values( \"%s\", \"%s\", \"%s\")" % (Id, content, date_time)
+    sql = "insert into user_comments values( \"%s\", \"%s\", \"%s\",\"%s\", \"%s\", \"%s\")" % (Id , user_name ,content, product_name, product_color, date_time)
     cursor.execute(sql)
     cursor.connection.commit()
     cursor.close()
@@ -63,5 +62,4 @@ if __name__ == "__main__":
               '&score=0&sortType=5&page=' + str(i) + '&pageSize=10&isShadowSku=0&rid=0&fold=1'
         print(url)
         get_comments(url)
-        # 设置休眠时间
         time.sleep(random.randint(1, 3))
