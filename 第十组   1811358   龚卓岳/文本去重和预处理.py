@@ -3,7 +3,7 @@ import pandas as pd
 if __name__ == "__main__":
     conn = pymysql.connect(host="localhost", user="root", password="", database="user_comments")
     cursor = conn.cursor()
-    sql='select content from user_comments.user_comments'
+    sql='select content from user_comments.user_comments where content is not null'
     cursor.execute(sql)
     curr=cursor.fetchall()   #从数据库拿出爬虫爬取到的数据,通过抽取特定列实现评论抽取
     comments=[]
