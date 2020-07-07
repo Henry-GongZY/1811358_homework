@@ -7,6 +7,8 @@ import random
 import urllib
 import pymongo
 #来自小组的爬虫作业，数据源:https://item.jd.com/100004771217.html，从此页面进行评论爬取并存入mysql数据库
+#可以通过改变referenceIds=‘’的方式爬取不同商品的评论数据
+#总体逻辑是先运行爬虫将评论从页面上爬取下来，在运行预处理和去重进行去重，最后运行机械压缩。
 
 def get_comments_number():
     url = 'https://club.jd.com/comment/productCommentSummaries.action?referenceIds=100004771217'
@@ -40,6 +42,7 @@ def get_comments(__url):
         write_to_mysql(str(Id), user_name ,content, product_name, product_color, date_time)
         print(str(Id), user_name ,content, product_name, product_color, date_time)
         # mycol.insert_one(i)
+
 #爬取数据存入数据库
 def write_to_mysql(Id, user_name ,content, product_name, product_color,date_time):
     conn = pymysql.connect(host="localhost", user="root", password="", database="user_comments")
@@ -49,7 +52,6 @@ def write_to_mysql(Id, user_name ,content, product_name, product_color,date_time
     cursor.connection.commit()
     cursor.close()
     conn.close()
-
 
 if __name__ == "__main__":
     url = "https://club.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98&productId=100004771217" \

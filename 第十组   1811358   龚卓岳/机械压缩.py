@@ -60,5 +60,5 @@ if __name__ == "__main__":
     comments=pd.read_csv('comments.csv',encoding='utf-8',header=None)
     comments=comments.set_index(0,drop=True)
     for i in range(len(comments.index)):
-        comments.iloc[i][1]=(depress(comments.iloc[i][1])[0])
+        comments.iloc[i][1]=depress(comments.iloc[i][1])[0]
     comments.to_csv('comments.csv', encoding='utf-8', header=False)
